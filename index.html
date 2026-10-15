@@ -5,27 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>بيتنا</title>
 
-  <!-- ملف ربط الأندرويد الملون (الجديد) -->
   <link rel="manifest" href="manifest.json">
-
-  <!-- إعدادات آيفون (Apple) -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="بيتنا">
   <link rel="apple-touch-icon" href="https://j.top4top.io/p_3940vm53l1.jpeg">
 
-  <!-- إعدادات أندرويد (Google Chrome) -->
   <meta name="theme-color" content="#F9FAFB">
   <link rel="icon" type="image/jpeg" sizes="192x192" href="https://j.top4top.io/p_3940vm53l1.jpeg">
   <link rel="icon" type="image/jpeg" sizes="512x512" href="https://j.top4top.io/p_3940vm53l1.jpeg">
-  <link rel="shortcut icon" href="https://j.top4top.io/p_3940vm53l1.jpeg">
-
+  
   <style>
     body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #F9FAFB; }
     iframe { width: 100%; height: 100%; border: none; }
   </style>
 </head>
 <body>
-  <iframe src="https://script.google.com/macros/s/AKfycbyh_RhsBhRfx2tOzFmPnU2MSpjmuYAhBYM-P3aP9HCWea4NyFjsd8FfGd1_DGNDneke2A/exec"></iframe>
+  <!-- إطار التطبيق -->
+  <iframe id="gasFrame" src=""></iframe>
+  
+  <script>
+    // 1. جلب بيانات الدخول المحفوظة بأمان من الغلاف
+    const savedToken = localStorage.getItem('beitna_token') || '';
+    
+    // ضع رابط جوجل اب سكربت بين علامتي التنصيص أسفله:
+    const baseUrl = "https://script.google.com/macros/s/AKfycbyh_RhsBhRfx2tOzFmPnU2MSpjmuYAhBYM-P3aP9HCWea4NyFjsd8FfGd1_DGNDneke2A/exec"; 
+    
+    // 2. حقن بيانات الدخول للتطبيق فور فتحه
+    document.getElementById('gasFrame').src = baseUrl + (savedToken ? "#t=" + savedToken : "");
+
+    // 3. الاستماع لأي تسجيل دخول جديد لحفظه في الخزنة
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'setToken') {
+        localStorage.setItem('beitna_token', e.data.token);
+      } else if (e.data && e.data.type === 'clearToken') {
+        localStorage.removeItem('beitna_token');
+      }
+    });
+  </script>
 </body>
 </html>
