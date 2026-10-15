@@ -21,22 +21,16 @@
   </style>
 </head>
 <body>
-  <!-- إطار التطبيق -->
-  <iframe id="gasFrame" src=""></iframe>
+  <!-- هنا تضع رابط جوجل اب سكربت كاملاً -->
+  <iframe id="gasFrame" src="https://script.google.com/macros/s/AKfycbyh_RhsBhRfx2tOzFmPnU2MSpjmuYAhBYM-P3aP9HCWea4NyFjsd8FfGd1_DGNDneke2A/exec"></iframe>
   
   <script>
-    // 1. جلب بيانات الدخول المحفوظة بأمان من الغلاف
-    const savedToken = localStorage.getItem('beitna_token') || '';
-    
-    // ضع رابط جوجل اب سكربت بين علامتي التنصيص أسفله:
-    const baseUrl = "https://script.google.com/macros/s/AKfycbyh_RhsBhRfx2tOzFmPnU2MSpjmuYAhBYM-P3aP9HCWea4NyFjsd8FfGd1_DGNDneke2A/exec"; 
-    
-    // 2. حقن بيانات الدخول للتطبيق فور فتحه
-    document.getElementById('gasFrame').src = baseUrl + (savedToken ? "#t=" + savedToken : "");
-
-    // 3. الاستماع لأي تسجيل دخول جديد لحفظه في الخزنة
+    // الاستماع لطلبات التطبيق وإرسال الرمز عند طلبه مباشرة لتخطي حظر الآيفون
     window.addEventListener('message', function(e) {
-      if (e.data && e.data.type === 'setToken') {
+      if (e.data && e.data.type === 'getToken') {
+        const token = localStorage.getItem('beitna_token') || '';
+        e.source.postMessage({ type: 'tokenResponse', token: token }, '*');
+      } else if (e.data && e.data.type === 'setToken') {
         localStorage.setItem('beitna_token', e.data.token);
       } else if (e.data && e.data.type === 'clearToken') {
         localStorage.removeItem('beitna_token');
@@ -44,4 +38,4 @@
     });
   </script>
 </body>
-</html>
+</html>  
